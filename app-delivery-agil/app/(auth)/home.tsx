@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Button,
 } from 'react-native';
+import io from 'socket.io-client';
 
 // Altere o valor da constante para o IP da sua máquina, lembre-se que deve ser uma string
 const ip_address = '';
@@ -24,6 +25,50 @@ export default function Home() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
+  const socket = io(`http://${ip_address}:3000`);
+
+  useEffect(() => {
+    fetchOrders();
+
+    socket.on('orderCreated', (newOrder: Order) => {
+      setOrders((prevOrders) => {
+        const exists = prevOrders.some((order) => order.id === newOrder.id);
+        const matchesFilter = !statusFilter || newOrder.status === statusFilter;
+        return exists || !matchesFilter
+          ? prevOrders
+          : [...prevOrders, newOrder];
+      });
+    });
+
+    socket.on('orderUpdated', (updatedOrder: Order) => {
+      setOrders((prevOrders) => {
+        const matchesFilter =
+          !statusFilter || updatedOrder.status === statusFilter;
+
+        if (matchesFilter) {
+          return prevOrders.some((order) => order.id === updatedOrder.id)
+            ? prevOrders.map((order) =>
+                order.id === updatedOrder.id ? updatedOrder : order
+              )
+            : [...prevOrders, updatedOrder];
+        } else {
+          return prevOrders.filter((order) => order.id !== updatedOrder.id);
+        }
+      });
+    });
+
+    socket.on('orderDeleted', (deletedOrderId: number) => {
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.id !== deletedOrderId)
+      );
+    });
+
+    return () => {
+      socket.off('orderCreated');
+      socket.off('orderUpdated');
+      socket.off('orderDeleted');
+    };
+  }, [statusFilter]);
 
   useEffect(() => {
     fetchOrders();
