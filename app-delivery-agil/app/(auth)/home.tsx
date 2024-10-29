@@ -9,9 +9,10 @@ import {
   Button,
 } from 'react-native';
 import io from 'socket.io-client';
+import { useNavigation } from '@react-navigation/native';
 
-// Altere o valor da constante para o IP da sua máquina, lembre-se que deve ser uma string
-const ip_address = '';
+// Altere o valor da constante para o IP da sua máquina
+const ip_address = '192.168.0.13';
 
 export default function Home() {
   interface Order {
@@ -26,6 +27,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const socket = io(`http://${ip_address}:3000`);
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchOrders();
@@ -68,10 +70,6 @@ export default function Home() {
       socket.off('orderUpdated');
       socket.off('orderDeleted');
     };
-  }, [statusFilter]);
-
-  useEffect(() => {
-    fetchOrders();
   }, [statusFilter]);
 
   const fetchOrders = async () => {
@@ -131,6 +129,12 @@ export default function Home() {
               <Text>Produtos: {item.products.join(', ')}</Text>
               <Text>Endereço: {item.address}</Text>
               <Text>Status: {item.status}</Text>
+              <Button
+                title="Ver Entrega"
+                onPress={() =>
+                  navigation.navigate('delivery', { orderId: item.id })
+                }
+              />
             </View>
           )}
         />
