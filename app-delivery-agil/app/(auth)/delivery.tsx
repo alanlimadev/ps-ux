@@ -14,6 +14,12 @@ interface Order {
   status: 'Pendente' | 'Em Andamento' | 'Concluído';
 }
 
+const deliveryStartLocation = {
+  latitude: -3.6892,
+  longitude: -40.355,
+  address: 'Av. Monsenhor José Aloísio Pinto, 300, Dom Expedito, Sobral',
+};
+
 export default function Delivery() {
   const route = useRoute();
   const { orderId } = route.params as { orderId: number };
@@ -60,9 +66,9 @@ export default function Delivery() {
 
   const openGoogleMaps = () => {
     if (order) {
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        order.address
-      )}`;
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+        deliveryStartLocation.address
+      )}&destination=${encodeURIComponent(order.address)}`;
       Linking.openURL(url);
     }
   };
@@ -86,15 +92,28 @@ export default function Delivery() {
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: -23.5505,
-          longitude: -46.6333,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitude: deliveryStartLocation.latitude,
+          longitude: deliveryStartLocation.longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
         }}
       >
         <Marker
-          coordinate={{ latitude: -23.5505, longitude: -46.6333 }}
-          title={order.name}
+          coordinate={{
+            latitude: deliveryStartLocation.latitude,
+            longitude: deliveryStartLocation.longitude,
+          }}
+          title="Ponto de Partida"
+          description={deliveryStartLocation.address}
+          pinColor="blue"
+        />
+        <Marker
+          coordinate={{
+            latitude: -23.5505,
+            longitude: -46.6333,
+          }}
+          title="Destino"
+          description={order.address}
         />
       </MapView>
 
