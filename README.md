@@ -3,7 +3,7 @@ Descrição do desafio técnico: imagine que você foi contratado com desenvolve
 
 ## Stack utilizada
 
-**Front-end:** React Native
+**App:** React Native
 
 **Back-end:** Nestjs e WebSocket
 
