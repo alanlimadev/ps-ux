@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, Linking } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { useRoute } from '@react-navigation/native';
 
@@ -118,15 +124,25 @@ export default function Delivery() {
       </MapView>
 
       <View style={styles.buttonContainer}>
-        <Button
-          title="Saindo para a Entrega"
+        <TouchableOpacity
+          style={[
+            styles.button,
+            order.status !== 'Pendente' && styles.buttonDisabled,
+          ]}
           onPress={() => handleStatusChange('Em Andamento')}
-        />
-        <Button
-          title="Pedido Entregue"
+          disabled={order.status !== 'Pendente'}
+        >
+          <Text style={styles.buttonText}>Saindo para a Entrega</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => handleStatusChange('Concluído')}
-        />
-        <Button title="Abrir no Google Maps" onPress={openGoogleMaps} />
+        >
+          <Text style={styles.buttonText}>Pedido Entregue</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={openGoogleMaps}>
+          <Text style={styles.buttonText}>Abrir no Google Maps</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -148,5 +164,22 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 16,
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: '#800000',
+    borderRadius: 8,
+    padding: 12,
+    width: '80%',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  buttonDisabled: {
+    backgroundColor: '#A9A9A9',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

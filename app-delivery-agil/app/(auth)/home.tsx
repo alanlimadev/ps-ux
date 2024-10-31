@@ -6,12 +6,11 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  Button,
+  TouchableOpacity,
 } from 'react-native';
 import io from 'socket.io-client';
 import { useNavigation } from '@react-navigation/native';
 
-// Altere o valor da constante para o IP da sua máquina
 const ip_address = '192.168.0.13';
 
 export default function Home() {
@@ -102,19 +101,18 @@ export default function Home() {
       </View>
 
       <View style={styles.filterContainer}>
-        <Button title="Todos" onPress={() => handleFilterChange('')} />
-        <Button
-          title="Pendente"
-          onPress={() => handleFilterChange('Pendente')}
-        />
-        <Button
-          title="Em Andamento"
-          onPress={() => handleFilterChange('Em Andamento')}
-        />
-        <Button
-          title="Concluído"
-          onPress={() => handleFilterChange('Concluído')}
-        />
+        <TouchableOpacity onPress={() => handleFilterChange('')}>
+          <Text style={styles.filterButton}>ALL</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleFilterChange('Pendente')}>
+          <Text style={styles.filterButton}>PENDENTE</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleFilterChange('Em Andamento')}>
+          <Text style={styles.filterButton}>EM ANDAMENTO</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleFilterChange('Concluído')}>
+          <Text style={styles.filterButton}>CONCLUÍDO</Text>
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -129,12 +127,14 @@ export default function Home() {
               <Text>Produtos: {item.products.join(', ')}</Text>
               <Text>Endereço: {item.address}</Text>
               <Text>Status: {item.status}</Text>
-              <Button
-                title="Ver Entrega"
+              <TouchableOpacity
+                style={styles.orderButton}
                 onPress={() =>
                   navigation.navigate('delivery', { orderId: item.id })
                 }
-              />
+              >
+                <Text style={styles.orderButtonText}>Ver Entrega</Text>
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -156,8 +156,19 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     marginBottom: 20,
+  },
+  filterButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#8B0000',
+    color: '#fff',
+    borderRadius: 4,
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginHorizontal: 5,
   },
   orderItem: {
     padding: 10,
@@ -169,5 +180,17 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  orderButton: {
+    backgroundColor: '#8B0000',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginTop: 10,
+  },
+  orderButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
