@@ -135,8 +135,12 @@ export default function Delivery() {
           <Text style={styles.buttonText}>Saindo para a Entrega</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.button}
+          style={[
+            styles.button,
+            order.status !== 'Em Andamento' && styles.buttonDisabled,
+          ]}
           onPress={() => handleStatusChange('Concluído')}
+          disabled={order.status !== 'Em Andamento'}
         >
           <Text style={styles.buttonText}>Pedido Entregue</Text>
         </TouchableOpacity>
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#800000',
     borderRadius: 8,
     padding: 12,
-    width: '80%',
+    width: '100%',
     alignItems: 'center',
     marginBottom: 16,
   },
