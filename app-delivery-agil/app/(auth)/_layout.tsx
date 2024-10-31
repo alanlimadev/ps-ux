@@ -24,15 +24,15 @@ export default function StackPage() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#121212',
+          backgroundColor: '#FFF',
         },
-        headerTintColor: '#FFF',
+        headerTintColor: '#000',
       }}
     >
       <Stack.Screen
         name="home"
         options={{
-          headerTitle: 'Home',
+          headerShown: false,
         }}
         redirect={!isSignedIn}
       />
